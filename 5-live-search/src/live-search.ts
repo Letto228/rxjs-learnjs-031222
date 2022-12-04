@@ -1,6 +1,6 @@
-import { OperatorFunction, pipe } from "rxjs";
+import { EMPTY, of, OperatorFunction, pipe } from "rxjs";
 import { ajax, AjaxConfig } from "rxjs/ajax";
-import { debounceTime, distinctUntilChanged, filter, map, switchMap } from "rxjs/operators";
+import { catchError, debounceTime, distinctUntilChanged, filter, map, switchMap } from "rxjs/operators";
 
 const searchDebounce = 300;
 
@@ -17,7 +17,9 @@ export function liveSearch<T>(
             url: urlCreater(searchParam),
         })),
         switchMap(ajaxConfig => ajax<T>(ajaxConfig).pipe(
-            map(({response}) => response)
+            map(({response}) => response),
+            catchError(() => EMPTY),
         )),
+
     )
 }

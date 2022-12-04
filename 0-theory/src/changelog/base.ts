@@ -198,11 +198,11 @@
 
 // // from(iteratorFunction(3, 1000)).subscribe(console.log);
 
-// // ajax({
-// //     url: 'https://learn.javascript.ru/courses/groups/api/participants?key=1audcei',
-// //     crossDomain: true,
-// //     method: 'GET',
-// // }).subscribe(console.log);
+// ajax({
+//     url: 'https://learn.javascript.ru/courses/groups/api/participants?key=1audcei',
+//     crossDomain: true,
+//     method: 'GET',
+// }).subscribe(console.log);
 
 // // const sequence$ = defer(() => {
 // //     const random = Math.round(Math.random() * 10);
