@@ -11,7 +11,7 @@ const up$ = merge(
     fromEvent<TouchEvent>(document, 'touchend'),
 )
 
-function getXPosition(event: MouseEvent | TouchEvent): number {
+export function getXPosition(event: MouseEvent | TouchEvent): number {
     return event instanceof MouseEvent
         ? event.clientX
         : event.changedTouches.item(0)!.clientX;

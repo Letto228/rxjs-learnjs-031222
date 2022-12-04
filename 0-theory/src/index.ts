@@ -1,41 +1,67 @@
-import { AsyncSubject, ConnectableObservable, interval, multicast, Observable, publish, refCount, ReplaySubject, share, shareReplay, Subject } from 'rxjs';
+import { asapScheduler, asyncScheduler, combineLatest, map, merge, observeOn, of, queueScheduler, scheduled, Subject, subscribeOn, take, tap } from 'rxjs';
 import '../../assets/css/style.css';
-import { terminalLog } from '../../utils/log-in-terminal';
 
-// const subject = new Subject();
-const customSubject = new Observable(subcriber => {
-    console.log('customSubject')
-    subcriber.next(4);
-    subcriber.complete();
-})
+const data = Array.from({length: 10}).map((_, i) => i);
 
-// const stream$ = customSubject.pipe(
-const stream$ = interval(1000).pipe(
-    // multicast(subject),
-    // publish(),
-    // refCount(),
-    // shareReplay(1),
-    share({
-        connector: () => new Subject(),
-        resetOnComplete: false,
-        resetOnError: true,
-        resetOnRefCountZero: false,
-    }),
-);
-// ) as ConnectableObservable<unknown>;
+// of(...data, asyncScheduler).subscribe(console.log);
+// of(...data, asapScheduler).subscribe(console.log);
 
-// stream$.connect();
+// merge(
+//     scheduled(data, asyncScheduler).pipe(map(value => `scheduled - ${value}`)), //macro
+//     of(...data).pipe(map(value => `of - ${value}`)),
+// ).subscribe(console.log);
 
-const subscription = stream$.subscribe(value => {
-    terminalLog(`Sub 1 - ${value}`);
-})
+// of(...data)
+//     .pipe(
+//         tap(() => {
+//             console.log('default schedular');
+//         }),
+//         tap(() => {
+//             console.log('async schedular');
+//         }),
+//         subscribeOn(asapScheduler),
+//         observeOn(asyncScheduler),
+//     )
+//     .subscribe(value => {
+//         console.log(`async - ${value}`)
+//     });
 
-setTimeout(() => {
-    subscription.unsubscribe();
-}, 3000)
+// of(...data).subscribe(value => {
+//     console.log(`sync - ${value}`)
+// });
+    
+// of(...data).pipe(observeOn(asyncScheduler))
+// scheduled(data, asyncScheduler)
 
-setTimeout(() => {
-    stream$.subscribe(value => {
-        terminalLog(`Sub 3 - ${value}`);
+// const streamFirst$ = scheduled([1, 2], asyncScheduler);
+// const streamSecond$ = of(3);
+
+// combineLatest([
+//     streamSecond$,
+//     streamFirst$,
+// ]).subscribe(console.log);
+
+// combineLatest([
+//     streamFirst$,
+//     streamSecond$,
+// ]).subscribe(console.log);
+
+
+
+const signal$ = new Subject<number>();
+
+console.log('start');
+
+signal$
+    .pipe(
+        take(50000),
+        // observeOn(asapScheduler),
+    )
+    .subscribe(count => {
+        console.log(`calc - ${count}`)
+        signal$.next(count + 1);
     })
-}, 5000)
+
+signal$.next(0);
+
+console.log('stop')
